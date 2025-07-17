@@ -190,9 +190,8 @@
     let totalItems = 0;
     let isLoading = false;
     
-    const apiUrl = window.location.hostname === 'localhost'
-      ? 'http://localhost:3000/api/ideas'
-      : 'https://suitmedia-api-production.up.railway.app/api/ideas';
+    // FIXED: Use the correct API URL - your deployed server, not the nonexistent one
+    const apiUrl = 'https://project-test-tegar-simanjuntak-production.up.railway.app/api/ideas';
 
     // Initialize on page load
     document.addEventListener('DOMContentLoaded', () => {
@@ -261,6 +260,7 @@
       hideError();
 
       try {
+        // FIXED: Use the correct API URL and parameters
         const response = await fetch(`${apiUrl}?page=${currentPage}&size=${pageSize}&sort=${sort}`);
         
         if (!response.ok) {
@@ -336,16 +336,6 @@
       } catch (_) {
         return false;
       }
-    }
-
-    // Function to test if image loads
-    function testImageLoad(src) {
-      return new Promise((resolve) => {
-        const img = new Image();
-        img.onload = () => resolve(true);
-        img.onerror = () => resolve(false);
-        img.src = src;
-      });
     }
 
     // Render posts
