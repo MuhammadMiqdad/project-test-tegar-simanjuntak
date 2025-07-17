@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Suitmedia Ideas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    
+    /* Line clamp for title */
+    .line-clamp-3 {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.4;
+      max-height: 4.2em;
+    }
+    
+    /* Header animations */
+    header {
+      transition: transform 0.3s ease-in-out, backdrop-filter 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+    
+    .header-hidden {
+      transform: translateY(-100%);
+    }
+    
+    /* Banner with parallax effect */
+    .banner {
+      background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80') no-repeat center center;
+      background-size: cover;
+      background-attachment: fixed;
+      height: 400px;
+      clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+      position: relative;
+    }
+    
+    .banner-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+    }
+    
+    /* Card hover effects */
+    .card-hover {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+    
+    /* Pagination styles */
+    .pagination-btn {
+      transition: all 0.3s ease;
+    }
+    
+    .pagination-btn:hover {
+      transform: translateY(-2px);
+    }
+    
+    /* Loading skeleton */
+    .skeleton {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: loading 1.5s infinite;
+    }
+    
+    @keyframes loading {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    
+    /* Responsive improvements */
+    @media (max-width: 768px) {
+      .banner {
+        height: 250px;
+        background-attachment: scroll;
+      }
+    }
+    
+    /* Smooth scrolling */
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    /* Image loading states */
+    .image-loading {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: loading 1.5s infinite;
+    }
+    
+    .image-error {
+      background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #6b7280;
+      font-size: 14px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+
+  <!-- Header -->
+  <header id="main-header" class="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md shadow-lg z-50">
+    <nav class="container mx-auto px-4 py-4 flex justify-between items-center">
+      <div class="text-orange-500 font-bold text-2xl">
+        <a href="#" class="hover:text-orange-600 transition-colors">Suitmedia</a>
+      </div>
+      <ul class="flex space-x-8 text-sm font-semibold">
+        <li><a href="#" class="text-orange-600 border-b-2 border-orange-600 pb-1">Ideas</a></li>
+        <li><a href="#" class="text-gray-600 hover:text-orange-600 transition-colors">Work</a></li>
+        <li><a href="#" class="text-gray-600 hover:text-orange-600 transition-colors">Services</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Banner with Parallax -->
+  <div class="banner">
+    <div class="banner-text">
+      <h1 class="text-white text-5xl font-bold text-center drop-shadow-lg">
+        Ideas
+      </h1>
+      <p class="text-white/90 text-center mt-2 text-lg drop-shadow-md">
+        Where great ideas come to life
+      </p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container mx-auto px-4 py-8">
+    <!-- Controls -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+      <p id="status-text" class="text-gray-600 font-medium">Loading...</p>
+      <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+        <label class="flex items-center space-x-2">
+          <span class="text-gray-700 font-medium">Show per page:</span>
+          <select id="pageSize" class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500">
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+          </select>
+        </label>
+        <label class="flex items-center space-x-2">
+          <span class="text-gray-700 font-medium">Sort by:</span>
+          <select id="sortOrder" class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500">
+            <option value="-published_at">Newest</option>
+            <option value="published_at">Oldest</option>
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <!-- Posts List -->
+    <div id="posts" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8"></div>
+
+    <!-- Loading Indicator -->
+    <div id="loading" class="hidden text-center py-8">
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+      <p class="mt-2 text-gray-600">Loading posts...</p>
+    </div>
+
+    <!-- Error Message -->
+    <div id="error" class="hidden text-center py-8">
+      <p class="text-red-600 font-medium">Failed to load posts. Please try again.</p>
+      <button onclick="fetchPosts()" class="mt-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors">
+        Retry
+      </button>
+    </div>
+
+    <!-- Pagination -->
+    <div id="pagination" class="flex justify-center items-center space-x-2"></div>
+  </div>
+
+  <script>
+    // State management
+    let currentPage = 1;
+    let pageSize = 10;
+    let sort = '-published_at';
+    let totalPages = 0;
+    let totalItems = 0;
+    let isLoading = false;
+    
+    const apiUrl = 'http://localhost:3000/api/ideas';
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      // Restore state from URL parameters
+      restoreStateFromURL();
+      
+      // Event listeners
+      document.getElementById('pageSize').addEventListener('change', handlePageSizeChange);
+      document.getElementById('sortOrder').addEventListener('change', handleSortChange);
+      
+      // Initial fetch
+      fetchPosts();
+      
+      // Header scroll behavior
+      initializeHeaderScroll();
+      
+      // Parallax effect
+      initializeParallax();
+    });
+
+    // Restore state from URL parameters
+    function restoreStateFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      
+      currentPage = parseInt(params.get('page')) || 1;
+      pageSize = parseInt(params.get('size')) || 10;
+      sort = params.get('sort') || '-published_at';
+      
+      // Set form values
+      document.getElementById('pageSize').value = pageSize;
+      document.getElementById('sortOrder').value = sort;
+    }
+
+    // Update URL without page reload
+    function updateURL() {
+      const params = new URLSearchParams();
+      params.set('page', currentPage);
+      params.set('size', pageSize);
+      params.set('sort', sort);
+      
+      window.history.replaceState({}, '', `${window.location.pathname}?${params}`);
+    }
+
+    // Handle page size change
+    function handlePageSizeChange(e) {
+      pageSize = parseInt(e.target.value);
+      currentPage = 1;
+      updateURL();
+      fetchPosts();
+    }
+
+    // Handle sort change
+    function handleSortChange(e) {
+      sort = e.target.value;
+      currentPage = 1;
+      updateURL();
+      fetchPosts();
+    }
+
+    // Fetch posts from API
+    async function fetchPosts() {
+      if (isLoading) return;
+      
+      isLoading = true;
+      showLoading();
+      hideError();
+
+      try {
+        const response = await fetch(`${apiUrl}?page=${currentPage}&size=${pageSize}&sort=${sort}`);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data && data.data) {
+          renderPosts(data.data);
+          updateStatusText(data.meta);
+          renderPagination(data.meta);
+        } else {
+          throw new Error('Invalid response format');
+        }
+        
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+        showError();
+      } finally {
+        isLoading = false;
+        hideLoading();
+      }
+    }
+
+    // Function to validate and fix image URL
+    function getValidImageUrl(post) {
+      const defaultImage = 'https://via.placeholder.com/400x300/f3f4f6/6b7280?text=No+Image';
+      
+      // Check if post has images
+      if (!post.small_image && !post.medium_image) {
+        return defaultImage;
+      }
+      
+      // Try small image first
+      if (post.small_image && post.small_image.url) {
+        let imageUrl = post.small_image.url;
+        
+        // Fix relative URLs
+        if (imageUrl.startsWith('/')) {
+          imageUrl = 'https://suitmedia-backend.suitdev.com' + imageUrl;
+        }
+        
+        // Check if URL is valid
+        if (isValidUrl(imageUrl)) {
+          return imageUrl;
+        }
+      }
+      
+      // Try medium image
+      if (post.medium_image && post.medium_image.url) {
+        let imageUrl = post.medium_image.url;
+        
+        // Fix relative URLs
+        if (imageUrl.startsWith('/')) {
+          imageUrl = 'https://suitmedia-backend.suitdev.com' + imageUrl;
+        }
+        
+        // Check if URL is valid
+        if (isValidUrl(imageUrl)) {
+          return imageUrl;
+        }
+      }
+      
+      return defaultImage;
+    }
+
+    // Function to validate URL
+    function isValidUrl(string) {
+      try {
+        const url = new URL(string);
+        return url.protocol === "http:" || url.protocol === "https:";
+      } catch (_) {
+        return false;
+      }
+    }
+
+    // Function to test if image loads
+    function testImageLoad(src) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = src;
+      });
+    }
+
+    // Render posts
+    function renderPosts(posts) {
+      const container = document.getElementById('posts');
+      container.innerHTML = '';
+
+      posts.forEach(post => {
+        const card = createPostCard(post);
+        container.appendChild(card);
+      });
+    }
+
+    // Create post card element
+    function createPostCard(post) {
+      const card = document.createElement('div');
+      card.className = 'bg-white rounded-lg shadow-md overflow-hidden card-hover';
+      
+      const title = post.title || 'Untitled';
+      const date = post.published_at ? formatDate(post.published_at) : 'No date';
+      
+      // Create image container
+      const imageContainer = document.createElement('div');
+      imageContainer.className = 'w-full h-48 bg-gray-200 image-loading';
+      
+      // Create image element
+      const img = document.createElement('img');
+      img.className = 'w-full h-48 object-cover';
+      img.alt = title;
+      img.loading = 'lazy';
+      
+      // Set up image loading
+      const imageUrl = getValidImageUrl(post);
+      
+      img.onload = function() {
+        imageContainer.classList.remove('image-loading');
+        imageContainer.appendChild(img);
+      };
+      
+      img.onerror = function() {
+        imageContainer.classList.remove('image-loading');
+        imageContainer.classList.add('image-error');
+        imageContainer.innerHTML = `
+          <div class="flex flex-col items-center justify-center h-full">
+            <svg class="w-8 h-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            <span class="text-xs">No Image</span>
+          </div>
+        `;
+      };
+      
+      // Start loading image
+      img.src = imageUrl;
+      
+      // Create content
+      const content = document.createElement('div');
+      content.className = 'p-4';
+      content.innerHTML = `
+        <p class="text-xs text-gray-500 mb-2">${date}</p>
+        <h2 class="line-clamp-3 text-base font-semibold text-gray-800 leading-tight">${title}</h2>
+      `;
+      
+      // Assemble card
+      card.appendChild(imageContainer);
+      card.appendChild(content);
+      
+      return card;
+    }
+
+    // Format date
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('id-ID', { 
+        day: 'numeric', 
+        month: 'long', 
+        year: 'numeric' 
+      });
+    }
+
+    // Update status text
+    function updateStatusText(meta) {
+      const start = ((currentPage - 1) * pageSize) + 1;
+      const end = Math.min(currentPage * pageSize, meta.total);
+      
+      document.getElementById('status-text').textContent = 
+        `Showing ${start} - ${end} of ${meta.total}`;
+      
+      totalItems = meta.total;
+      totalPages = Math.ceil(meta.total / pageSize);
+    }
+
+    // Render pagination
+    function renderPagination(meta) {
+      const pagination = document.getElementById('pagination');
+      pagination.innerHTML = '';
+      
+      totalPages = Math.ceil(meta.total / pageSize);
+      
+      if (totalPages <= 1) return;
+
+      // Previous button
+      if (currentPage > 1) {
+        const prevBtn = createPaginationButton('Previous', currentPage - 1);
+        prevBtn.className += ' mr-2';
+        pagination.appendChild(prevBtn);
+      }
+
+      // Page numbers
+      const startPage = Math.max(1, currentPage - 2);
+      const endPage = Math.min(totalPages, currentPage + 2);
+
+      if (startPage > 1) {
+        pagination.appendChild(createPaginationButton('1', 1));
+        if (startPage > 2) {
+          const ellipsis = document.createElement('span');
+          ellipsis.textContent = '...';
+          ellipsis.className = 'px-3 py-2 text-gray-500';
+          pagination.appendChild(ellipsis);
+        }
+      }
+
+      for (let i = startPage; i <= endPage; i++) {
+        pagination.appendChild(createPaginationButton(i, i));
+      }
+
+      if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+          const ellipsis = document.createElement('span');
+          ellipsis.textContent = '...';
+          ellipsis.className = 'px-3 py-2 text-gray-500';
+          pagination.appendChild(ellipsis);
+        }
+        pagination.appendChild(createPaginationButton(totalPages, totalPages));
+      }
+
+      // Next button
+      if (currentPage < totalPages) {
+        const nextBtn = createPaginationButton('Next', currentPage + 1);
+        nextBtn.className += ' ml-2';
+        pagination.appendChild(nextBtn);
+      }
+    }
+
+    // Create pagination button
+    function createPaginationButton(text, page) {
+      const button = document.createElement('button');
+      button.textContent = text;
+      button.onclick = () => goToPage(page);
+      
+      const isActive = page === currentPage;
+      button.className = `pagination-btn px-3 py-2 rounded-lg font-medium ${
+        isActive 
+          ? 'bg-orange-500 text-white' 
+          : 'bg-white text-gray-700 hover:bg-orange-50 hover:text-orange-600 border border-gray-300'
+      }`;
+      
+      return button;
+    }
+
+    // Navigate to page
+    function goToPage(page) {
+      if (page === currentPage || page < 1 || page > totalPages) return;
+      
+      currentPage = page;
+      updateURL();
+      fetchPosts();
+      
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Loading states
+    function showLoading() {
+      document.getElementById('loading').classList.remove('hidden');
+      document.getElementById('posts').style.opacity = '0.5';
+    }
+
+    function hideLoading() {
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('posts').style.opacity = '1';
+    }
+
+    function showError() {
+      document.getElementById('error').classList.remove('hidden');
+    }
+
+    function hideError() {
+      document.getElementById('error').classList.add('hidden');
+    }
+
+    // Header scroll behavior
+    function initializeHeaderScroll() {
+      let lastScrollTop = 0;
+      const header = document.getElementById('main-header');
+      
+      window.addEventListener('scroll', () => {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        if (scrollTop > lastScrollTop && scrollTop > 100) {
+          // Scrolling down
+          header.classList.add('header-hidden');
+        } else {
+          // Scrolling up
+          header.classList.remove('header-hidden');
+        }
+        
+        lastScrollTop = scrollTop;
+      });
+    }
+
+    // Parallax effect
+    function initializeParallax() {
+      const banner = document.querySelector('.banner');
+      
+      window.addEventListener('scroll', () => {
+        const scrollTop = window.pageYOffset;
+        const rate = scrollTop * -0.5;
+        
+        if (banner) {
+          banner.style.transform = `translateY(${rate}px)`;
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>
